@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMULADOR EDUCATIVO - 2DOS - III TRIM</title>
+    <style>
+        :root {
+            --primary: #1e3d6b;
+            --primary-light: #2b5797;
+            --secondary: #00897b;
+            --accent: #d9381e;
+            --bg-light: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --border-radius: 10px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+            padding: 22px 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 1.9rem;
+            margin-bottom: 6px;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background-color: white;
+            border: 2px solid var(--primary-light);
+            color: var(--primary-light);
+            padding: 10px 18px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .tab-btn.locked {
+            border-color: #cbd5e0;
+            color: #a0aec0;
+            background-color: #edf2f7;
+            cursor: not-allowed;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 950px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Formulario Registro */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 5px rgba(0, 137, 123, 0.3);
+        }
+
+        /* ESTILOS DE FÓRMULAS Y FRACCIONES TIPOGRÁFICAS */
+        .math-formula {
+            background-color: #f8fafc;
+            border-left: 5px solid var(--primary-light);
+            padding: 12px 18px;
+            margin: 12px 0;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            padding: 0 4px;
+            font-size: 0.95rem;
+            line-height: 1.1;
+        }
+
+        .numerator {
+            border-bottom: 2px solid #2d3748;
+            padding-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .denominator {
+            padding-top: 2px;
+            font-weight: 600;
+        }
+
+        .concept-box {
+            background: #eef9f8;
+            border-left: 6px solid var(--secondary);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+        }
+
+        .concept-box h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .example-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .example-table th, .example-table td {
+            border: 1px solid #cbd5e0;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .example-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        /* Tareas Interactivas */
+        .task-card {
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+
+        .task-card h3 {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #00695c;
+        }
+
+        .btn:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+        }
+
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .feedback.success {
+            display: block;
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+
+        .feedback.error {
+            display: block;
+            background-color: #fed7d7;
+            color: #742a2a;
+        }
+
+        /* Evaluación & Temporizador */
+        .timer-box {
+            background-color: #ebf8ff;
+            border: 2px solid var(--primary-light);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question-box h4 {
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .option-label {
+            display: block;
+            padding: 10px 15px;
+            background: #edf2f7;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .option-label:hover {
+            background: #e2e8f0;
+        }
+
+        .option-label input {
+            margin-right: 10px;
+        }
+
+        /* Reporte Final */
+        .summary-card {
+            background: #f7fafc;
+            border: 2px dashed var(--primary);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .badge-score {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: #c6f6d5;
+            color: #22543d;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .alert-warning-box {
+            background-color: #fffaf0;
+            border: 2px dashed #dd6b20;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #c05621;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>SIMULADOR EDUCATIVO - 2DOS - III TRIM</h1>
+        <p><strong>Semana 1:</strong> Sucesiones Numéricas Reales, Monótonas y Por Recurrencia</p>
+        <p><strong>Docente:</strong> Msc. Edwin Lliguipuma Enríquez</p>
+    </header>
+
+    <!-- NAVEGACIÓN -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-registro')">1. Registro del Estudiante</button>
+        <button class="tab-btn" onclick="switchTab('tab-clase')">2. Clase Didáctica</button>
+        <button class="tab-btn" onclick="switchTab('tab-tarea')">3. Tarea para Casa (10 Ejercicios)</button>
+        <button class="tab-btn" onclick="switchTab('tab-evaluacion')">4. Evaluación (10 pts)</button>
+        <button class="tab-btn locked" id="tab-btn-reporte" onclick="switchTab('tab-reporte')">🔒 5. Guardar y Enviar</button>
+    </div>
+
+    <!-- PESTAÑA 1: REGISTRO INDIVIDUAL DEL ESTUDIANTE -->
+    <div id="tab-registro" class="tab-content active">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">Registro de Datos Informativos del Estudiante</h2>
+        <form id="student-form" onsubmit="event.preventDefault(); guardarRegistro();">
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="estudiante-nombre">Nombres y Apellidos del Estudiante:</label>
+                    <input type="text" id="estudiante-nombre" placeholder="Ingrese sus nombres y apellidos completos" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="curso">Curso:</label>
+                    <input type="text" id="curso" value="2DO DE BGU" readonly style="background-color: #edf2f7;">
+                </div>
+
+                <div class="form-group">
+                    <label for="especialidad">Especialidad:</label>
+                    <select id="especialidad" required>
+                        <option value="">-- Seleccione Especialidad --</option>
+                        <option value="INFORMÁTICA">INFORMÁTICA</option>
+                        <option value="CONTABILIDAD">CONTABILIDAD</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="paralelo">Paralelo:</label>
+                    <select id="paralelo" required>
+                        <option value="">-- Seleccione Paralelo --</option>
+                        <option value="A">Paralelo A</option>
+                        <option value="B">Paralelo B</option>
+                        <option value="C">Paralelo C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <button type="submit" class="btn">Guardar Datos Informativos e Iniciar Clase →</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- PESTAÑA 2: CLASE DIDÁCTICA CON FÓRMULAS CON RAYA DE FRACCIÓN -->
+    <div id="tab-clase" class="tab-content">
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Semana 1: Sucesiones Numéricas Reales y Recurrencia</h2>
+        
+        <div class="concept-box">
+            <h3>📘 Conceptos Fundamentales de Sucesiones</h3>
+            <p>
+                Una <strong>sucesión numérica real</strong> es una función cuyo dominio es el conjunto de los números naturales n ∈ ℕ (n = 1, 2, 3...) y cuyo codominio pertenece a los números reales ℝ. Cada elemento de la sucesión se denomina <em>término</em> y se denota por <strong>a<sub>n</sub></strong>.
+            </p>
+        </div>
+
+        <h3 style="color: var(--secondary); margin-top: 25px; margin-bottom: 10px;">Clasificación de Sucesiones</h3>
+
+        <div class="math-formula">
+            <strong>1. Sucesión Numérica Real Directa:</strong>
+            <span>a<sub>n</sub> = 3n + 2</span>
+            <span style="font-size: 0.9rem; color: #4a5568;">(Términos: a<sub>1</sub>=5, a<sub>2</sub>=8, a<sub>3</sub>=11...)</span>
+        </div>
+
+        <div class="math-formula">
+            <strong>2. Sucesión Oscilante (No Monótona):</strong>
+            <span>b<sub>n</sub> = (−1)<sup>n</sup> · n</span>
+            <span style="font-size: 0.9rem; color: #4a5568;">(Alterna de signo: b<sub>1</sub>=−1, b<sub>2</sub>=2, b<sub>3</sub>=−3...)</span>
+        </div>
+
+        <div class="math-formula">
+            <strong>3. Sucesión por Recurrencia:</strong>
+            <span>c<sub>n</sub> = c<sub>n−1</sub> + 4 &nbsp;&nbsp;(con c<sub>1</sub> = 3)</span>
+            <span style="font-size: 0.9rem; color: #4a5568;">(Depende del término anterior: c<sub>1</sub>=3, c<sub>2</sub>=7, c<sub>3</sub>=11...)</span>
+        </div>
+
+        <div class="math-formula">
+            <strong>4. Sucesión Monótona Decreciente:</strong>
+            <span>d<sub>n</sub> = </span>
+            <div class="fraction">
+                <span class="numerator">1</span>
+                <span class="denominator">n + 1</span>
+            </div>
+            <span style="font-size: 0.9rem; color: #4a5568;">(Valores: d<sub>1</sub>=0.5, d<sub>2</sub>=0.33, d<sub>3</sub>=0.25...)</span>
+        </div>
+
+        <div class="math-formula">
+            <strong>5. Sucesión Alternada Fraccionaria:</strong>
+            <span>e<sub>n</sub> = (−1)<sup>n+1</sup> · </span>
+            <div class="fraction">
+                <span class="numerator">n</span>
+                <span class="denominator">2</span>
+            </div>
+            <span style="font-size: 0.9rem; color: #4a5568;">(Valores: e<sub>1</sub>=0.5, e<sub>2</sub>=−1, e<sub>3</sub>=1.5, e<sub>4</sub>=−2...)</span>
+        </div>
+
+        <h3 style="color: var(--primary); margin-top: 25px;">📊 Ejemplos Guiados de la Planificación</h3>
+
+        <table class="example-table">
+            <thead>
+                <tr>
+                    <th>Fórmula de la Sucesión</th>
+                    <th>Tipo de Sucesión</th>
+                    <th>Primeros 5 Términos (n = 1, 2, 3, 4, 5)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>a<sub>n</sub> = 3n + 2</strong></td>
+                    <td>Real / Monótona Creciente</td>
+                    <td>5, 8, 11, 14, 17</td>
+                </tr>
+                <tr>
+                    <td><strong>b<sub>n</sub> = (−1)<sup>n</sup> · n</strong></td>
+                    <td>Oscilante (No Monótona)</td>
+                    <td>−1, 2, −3, 4, −5</td>
+                </tr>
+                <tr>
+                    <td><strong>c<sub>n</sub> = c<sub>n−1</sub> + 4 (c<sub>1</sub> = 3)</strong></td>
+                    <td>Definida por Recurrencia</td>
+                    <td>3, 7, 11, 15, 19</td>
+                </tr>
+                <tr>
+                    <td><strong>d<sub>n</sub> = <div class="fraction"><span class="numerator">1</span><span class="denominator">n + 1</span></div></strong></td>
+                    <td>Monótona Decreciente</td>
+                    <td>1/2, 1/3, 1/4, 1/5, 1/6</td>
+                </tr>
+                <tr>
+                    <td><strong>e<sub>n</sub> = (−1)<sup>n+1</sup> · <div class="fraction"><span class="numerator">n</span><span class="denominator">2</span></div></strong></td>
+                    <td>Alternada Fraccionaria</td>
+                    <td>1/2, −1, 3/2, −2, 5/2</td>
+                </tr>
+                <tr>
+                    <td><strong>f<sub>n</sub> = f<sub>n−1</sub> · 2 (f<sub>1</sub> = 1)</strong></td>
+                    <td>Recurrencia Multiplicativa</td>
+                    <td>1, 2, 4, 8, 16</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <button class="btn" onclick="switchTab('tab-tarea')">Ir a los 10 Ejercicios para Casa →</button>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 3: TAREA CON 10 EJERCICIOS COMBINADOS Y PROBLEMAS REALES DEL ARCHIVO -->
+    <div id="tab-tarea" class="tab-content">
+        <h2 style="color: var(--primary); margin-bottom: 10px;">Tarea para Casa - 10 Ejercicios y Problemas Combinados</h2>
+        <p style="margin-bottom: 20px;">Resuelve los siguientes ejercicios algebraicos y problemas aplicados de la Semana 1.</p>
+
+        <!-- Ejercicio 1 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 1: Sucesión Real a<sub>n</sub> = 3n + 2</h3>
+            <p>Clasifique y determine el 5.º término (a<sub>5</sub>) de la sucesión <strong>a<sub>n</sub> = 3n + 2</strong>.</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule a<sub>5</sub> = 3(5) + 2:</label>
+                <input type="number" id="t1-val" placeholder="Ingrese el resultado">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(1, 17)">Comprobar Ejercicio 1</button>
+            <div id="f-1" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 2 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 2: Sucesión Oscilante b<sub>n</sub> = (−1)<sup>n</sup> · n</h3>
+            <p>Identifique si es monótona y calcule el 5.º término (b<sub>5</sub>) de <strong>b<sub>n</sub> = (−1)<sup>n</sup> · n</strong>.</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule b<sub>5</sub> = (−1)<sup>5</sup> · 5:</label>
+                <input type="number" id="t2-val" placeholder="Ingrese el resultado">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(2, -5)">Comprobar Ejercicio 2</button>
+            <div id="f-2" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 3 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 3: Recurrencia c<sub>n</sub> = c<sub>n−1</sub> + 4</h3>
+            <p>Con c<sub>1</sub> = 3 y c<sub>n</sub> = c<sub>n−1</sub> + 4, determine el 5.º término (c<sub>5</sub>).</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule c<sub>5</sub> (3, 7, 11, 15...):</label>
+                <input type="number" id="t3-val" placeholder="Ingrese el resultado">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(3, 19)">Comprobar Ejercicio 3</button>
+            <div id="f-3" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 4 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 4: Sucesión Decreciente d<sub>n</sub> = <div class="fraction"><span class="numerator">1</span><span class="denominator">n + 1</span></div></h3>
+            <p>Para la sucesión d<sub>n</sub> = <div class="fraction"><span class="numerator">1</span><span class="denominator">n + 1</span></div>, calcule el valor decimal del 4.º término (d<sub>4</sub>).</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule d<sub>4</sub> = <div class="fraction"><span class="numerator">1</span><span class="denominator">4 + 1</span></div> = <div class="fraction"><span class="numerator">1</span><span class="denominator">5</span></div>:</label>
+                <input type="number" step="0.01" id="t4-val" placeholder="Ej. 0.20">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(4, 0.20)">Comprobar Ejercicio 4</button>
+            <div id="f-4" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 5 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 5: Sucesión Alternada e<sub>n</sub> = (−1)<sup>n+1</sup> · <div class="fraction"><span class="numerator">n</span><span class="denominator">2</span></div></h3>
+            <p>Determine el 4.º término (e<sub>4</sub>) de la sucesión e<sub>n</sub> = (−1)<sup>n+1</sup> · <div class="fraction"><span class="numerator">n</span><span class="denominator">2</span></div>.</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule e<sub>4</sub> = (−1)<sup>5</sup> · <div class="fraction"><span class="numerator">4</span><span class="denominator">2</span></div>:</label>
+                <input type="number" id="t5-val" placeholder="Ingrese el resultado">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(5, -2)">Comprobar Ejercicio 5</button>
+            <div id="f-5" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 6 (Archivo) -->
+        <div class="task-card">
+            <h3>Ejercicio 6: Recurrencia Multiplicativa f<sub>n</sub> = f<sub>n−1</sub> · 2</h3>
+            <p>Con f<sub>1</sub> = 1 y f<sub>n</sub> = f<sub>n−1</sub> · 2, calcule el 5.º término (f<sub>5</sub>).</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule f<sub>5</sub> (1, 2, 4, 8...):</label>
+                <input type="number" id="t6-val" placeholder="Ingrese el resultado">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(6, 16)">Comprobar Ejercicio 6</button>
+            <div id="f-6" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 7 (Problema Real 1 del Archivo: Agricultor) -->
+        <div class="task-card">
+            <h3>Ejercicio 7: Problema de Aplicación Agrícola (Plantación de Árboles)</h3>
+            <p>Un agricultor planea plantar árboles frutales en su finca. En el primer año planta 5 árboles, y cada año siguiente planea plantar 3 árboles más que el año anterior (a<sub>n</sub> = 3n + 2). ¿Cuántos árboles habrá plantado en el quinto año (n = 5)?</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule a<sub>5</sub> = 3(5) + 2:</label>
+                <input type="number" id="t7-val" placeholder="Ingrese el total de árboles">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(7, 17)">Comprobar Ejercicio 7</button>
+            <div id="f-7" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 8 (Problema Real 2 del Archivo: Depósito de Agua) -->
+        <div class="task-card">
+            <h3>Ejercicio 8: Problema de Aplicación Física (Llenado de Depósito)</h3>
+            <p>Un depósito de agua se llena a razón de 100 litros en el primer minuto y aumenta la cantidad de agua en 50 litros cada minuto sucesivo (a<sub>n</sub> = 50n + 50). ¿Cuántos litros habrá en el depósito al final del sexto minuto (n = 6)?</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule a<sub>6</sub> = 50(6) + 50:</label>
+                <input type="number" id="t8-val" placeholder="Ingrese los litros en el minuto 6">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(8, 350)">Comprobar Ejercicio 8</button>
+            <div id="f-8" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 9 (Problema Combinado: Plan de Ahorro con Recurrencia) -->
+        <div class="task-card">
+            <h3>Ejercicio 9: Problema Combinado (Ahorro Semanal por Recurrencia)</h3>
+            <p>Un estudiante ahorra $15 en la primera semana (g<sub>1</sub> = 15) y cada semana incrementa su ahorro en $5 respecto a la semana anterior (g<sub>n</sub> = g<sub>n−1</sub> + 5). ¿Cuánto dinero ahorrará en la quinta semana (g<sub>5</sub>)?</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule g<sub>5</sub> (15, 20, 25, 30...):</label>
+                <input type="number" id="t9-val" placeholder="Ingrese el ahorro de la semana 5">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(9, 35)">Comprobar Ejercicio 9</button>
+            <div id="f-9" class="feedback"></div>
+        </div>
+
+        <!-- Ejercicio 10 (Problema Combinado: Producción Agrícola Decreciente) -->
+        <div class="task-card">
+            <h3>Ejercicio 10: Problema Combinado (Recolección Agrícola Decreciente)</h3>
+            <p>La recolección mensual de sacos de café en una finca disminuye por sequía según la fórmula h<sub>n</sub> = 50 − 4n (en quintales). ¿Cuántos quintales se recolectarán en el décimo mes (n = 10)?</p>
+            <div class="form-group" style="margin-top: 10px;">
+                <label>Calcule h<sub>10</sub> = 50 − 4(10):</label>
+                <input type="number" id="t10-val" placeholder="Ingrese los quintales recolectados">
+            </div>
+            <button class="btn" style="margin-top: 10px;" onclick="validar(10, 10)">Comprobar Ejercicio 10</button>
+            <div id="f-10" class="feedback"></div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <button class="btn" onclick="switchTab('tab-evaluacion')">Rendir la Evaluación Sumativa →</button>
+        </div>
+    </div>
+
+    <!-- PESTAÑA 4: EVALUACIÓN SUMATIVA CON 10 PREGUNTAS DEL ARCHIVO -->
+    <div id="tab-evaluacion" class="tab-content">
+        <h2 style="color: var(--primary); margin-bottom: 10px;">Evaluación Sumativa - Semana 1</h2>
+        
+        <!-- Caja del Temporizador e Intentos -->
+        <div class="timer-box">
+            <div>⏱️ Tiempo Restante: <span id="timer-display">30:00</span></div>
+            <div>🔄 Intentos Disponibles: <span id="intentos-display">2</span> / 2</div>
+        </div>
+
+        <p style="margin-bottom: 25px; color: #718096;">Debe responder <strong>OBLIGATORIAMENTE LAS 10 PREGUNTAS</strong> antes de enviar. Dispone de máximo 2 intentos.</p>
+
+        <form id="quiz-form">
+            <!-- P1 -->
+            <div class="question-box" id="qb-1">
+                <h4>1. ¿Cuál es el tema principal abordado en la Semana 1 del microcurrículo?</h4>
+                <label class="option-label"><input type="radio" name="q1" value="A"> A) Progresiones geométricas financieras</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B) Sucesiones Numéricas Reales, Monótonas y Por Recurrencia</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C) Derivada por cociente incremental</label>
+            </div>
+
+            <!-- P2 -->
+            <div class="question-box" id="qb-2">
+                <h4>2. ¿Cómo se define formalmente una sucesión numérica real?</h4>
+                <label class="option-label"><input type="radio" name="q2" value="A"> A) Una suma aleatoria de valores sin patrón</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B) Una función cuyo dominio es los números naturales ℕ y codominio los números reales ℝ</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C) Una matriz rectangular de datos agrupados</label>
+            </div>
+
+            <!-- P3 -->
+            <div class="question-box" id="qb-3">
+                <h4>3. Para la sucesión a<sub>n</sub> = 3n + 2, ¿cuál es el valor del 5.º término (a<sub>5</sub>)?</h4>
+                <label class="option-label"><input type="radio" name="q3" value="A"> A) 14</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B) 17</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C) 20</label>
+            </div>
+
+            <!-- P4 -->
+            <div class="question-box" id="qb-4">
+                <h4>4. En la sucesión b<sub>n</sub> = (−1)<sup>n</sup> · n, ¿cuál es su clasificación respecto a la monotonicidad?</h4>
+                <label class="option-label"><input type="radio" name="q4" value="A"> A) Monótona Creciente</label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> B) Monótona Decreciente</label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> C) No es monótona (es una sucesión oscilante)</label>
+            </div>
+
+            <!-- P5 -->
+            <div class="question-box" id="qb-5">
+                <h4>5. Dada la sucesión por recurrencia c<sub>n</sub> = c<sub>n−1</sub> + 4 con c<sub>1</sub> = 3, ¿cuál es el 5.º término (c<sub>5</sub>)?</h4>
+                <label class="option-label"><input type="radio" name="q5" value="A"> A) 15</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B) 19</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C) 23</label>
+            </div>
+
+            <!-- P6 -->
+            <div class="question-box" id="qb-6">
+                <h4>6. Para la sucesión d<sub>n</sub> = <div class="fraction"><span class="numerator">1</span><span class="denominator">n + 1</span></div>, ¿cuál es el valor decimal de d<sub>4</sub>?</h4>
+                <label class="option-label"><input type="radio" name="q6" value="A"> A) 0.20</label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> B) 0.25</label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> C) 0.50</label>
+            </div>
+
+            <!-- P7 -->
+            <div class="question-box" id="qb-7">
+                <h4>7. Dada la sucesión e<sub>n</sub> = (−1)<sup>n+1</sup> · <div class="fraction"><span class="numerator">n</span><span class="denominator">2</span></div>, ¿cuál es el resultado del 4.º término (e<sub>4</sub>)?</h4>
+                <label class="option-label"><input type="radio" name="q7" value="A"> A) 2</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B) −2</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C) −4</label>
+            </div>
+
+            <!-- P8 -->
+            <div class="question-box" id="qb-8">
+                <h4>8. En el problema agrícola (a<sub>n</sub> = 3n + 2), ¿cuántos árboles habrá plantado el agricultor en el 5.º año?</h4>
+                <label class="option-label"><input type="radio" name="q8" value="A"> A) 15 árboles</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B) 17 árboles</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C) 20 árboles</label>
+            </div>
+
+            <!-- P9 -->
+            <div class="question-box" id="qb-9">
+                <h4>9. En el problema del depósito de agua (a<sub>n</sub> = 50n + 50), ¿cuántos litros ingresan al 6.º minuto?</h4>
+                <label class="option-label"><input type="radio" name="q9" value="A"> A) 300 litros</label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> B) 350 litros</label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> C) 400 litros</label>
+            </div>
+
+            <!-- P10 -->
+            <div class="question-box" id="qb-10">
+                <h4>10. En la sucesión por recurrencia f<sub>n</sub> = f<sub>n−1</sub> · 2 con f<sub>1</sub> = 1, ¿cuál es el 5.º término (f<sub>5</sub>)?</h4>
+                <label class="option-label"><input type="radio" name="q10" value="A"> A) 10</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B) 16</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C) 32</label>
+            </div>
+
+            <div style="text-align: center; margin-top: 25px;">
+                <button type="button" id="btn-evaluar" class="btn" onclick="evaluarTest()">Finalizar y Calificar Evaluación</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- PESTAÑA 5: REPORTE FINAL CON ENVÍO EXCLUSIVO A lligui2768@gmail.com -->
+    <div id="tab-reporte" class="tab-content">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">Informe de Evaluación y Envío al Docente</h2>
+
+        <div id="bloqueo-mensaje" class="alert-warning-box">
+            <h3>🚫 ACCESO RESTRINGIDO Y DESHABILITADO</h3>
+            <p style="margin-top: 8px;">Para ver el informe final y enviar los resultados al docente, debe cumplir obligatoriamente dos pasos:</p>
+            <ol style="text-align: left; display: inline-block; margin-top: 10px; line-height: 1.8;">
+                <li><strong>1. Registrar sus datos informativos</strong> en la Pestaña 1.</li>
+                <li><strong>2. Responder y finalizar la evaluación sumativa de 10 preguntas</strong> en la Pestaña 4.</li>
+            </ol>
+        </div>
+
+        <div id="contenido-reporte-oficial" style="display: none;">
+            <div class="summary-card">
+                <div style="text-align: center;">
+                    <span class="status-badge" id="badge-estado-final">FIN DE LA EVALUACIÓN</span>
+                </div>
+                <div id="badge-nota" class="badge-score">0 / 10 Puntos</div>
+                
+                <div id="detalles-reporte" style="font-size: 1.05rem; line-height: 1.8;">
+                    <p><strong>Estudiante:</strong> <span id="rep-estudiante">-</span></p>
+                    <p><strong>Curso:</strong> 2DO DE BGU</p>
+                    <p><strong>Especialidad:</strong> <span id="rep-especialidad">-</span></p>
+                    <p><strong>Paralelo:</strong> <span id="rep-paralelo">-</span></p>
+                    <p><strong>Intentos Utilizados:</strong> <span id="rep-intentos">0 de 2</span></p>
+                    <p><strong>Fecha de Finalización:</strong> <span id="rep-fecha">--/--/----</span></p>
+                    <p><strong>Hora de Finalización:</strong> <span id="rep-hora">--:--:--</span></p>
+                    <p><strong>Correo Personal Destinatario:</strong> <span style="font-weight: bold; color: var(--primary-light);">lligui2768@gmail.com</span></p>
+                    <p><strong>Estado Oficial:</strong> <span id="rep-estado" style="font-weight: bold; color: var(--primary);">FIN DE LA EVALUACIÓN</span></p>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="enviarCorreo()">✉ Enviar Resultados Directamente a lligui2768@gmail.com</button>
+                <button class="btn btn-danger" onclick="window.print()">🖨 Imprimir o Guardar en PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables Globales de Control
+        let intentosRestantes = 2;
+        let timerSeconds = 1800; // 30 Minutos
+        let timerInterval = null;
+        let timerIniciado = false;
+        let fechaFin = "";
+        let horaFin = "";
+        let notaFinal = 0;
+        let evaluado = false;
+        let registroGuardado = false;
+        let nombreEstudiante = "";
+
+        function datosRegistradosValidos() {
+            const est = document.getElementById('estudiante-nombre').value.trim();
+            const esp = document.getElementById('especialidad').value;
+            const par = document.getElementById('paralelo').value;
+
+            if (!est || !esp || !par) {
+                return false;
+            }
+            return true;
+        }
+
+        function guardarRegistro() {
+            if (!datosRegistradosValidos()) {
+                alert("⚠️ Debe completar todos los campos informativos del estudiante.");
+                return;
+            }
+
+            nombreEstudiante = document.getElementById('estudiante-nombre').value.trim();
+            registroGuardado = true;
+            alert("✅ Datos informativos del estudiante guardados correctamente. Puede continuar a la clase didáctica.");
+            switchTab('tab-clase');
+        }
+
+        function switchTab(tabId) {
+            // BLOQUEO ESTRICTO DE PESTAÑA 5
+            if (tabId === 'tab-reporte') {
+                if (!registroGuardado || !datosRegistradosValidos()) {
+                    alert("🚫 ¡ACCIÓN BLOQUEADA!\nNo puede guardar ni enviar porque no ha ingresado los DATOS INFORMATIVOS en la Pestaña 1.");
+                    switchTab('tab-registro');
+                    return;
+                }
+                if (!evaluado) {
+                    alert("🚫 ¡ACCIÓN BLOQUEADA!\nNo puede guardar ni enviar el informe porque NO ha realizado la EVALUACIÓN SUMATIVA en la Pestaña 4.");
+                    switchTab('tab-evaluacion');
+                    return;
+                }
+            }
+
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            
+            const btnIndex = ['tab-registro', 'tab-clase', 'tab-tarea', 'tab-evaluacion', 'tab-reporte'].indexOf(tabId);
+            if (btnIndex !== -1) {
+                document.querySelectorAll('.tab-btn')[btnIndex].classList.add('active');
+            }
+
+            if (tabId === 'tab-evaluacion' && !timerIniciado) {
+                iniciarTemporizador();
+            }
+
+            actualizarResumen();
+        }
+
+        function iniciarTemporizador() {
+            timerIniciado = true;
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                let min = Math.floor(timerSeconds / 60);
+                let sec = timerSeconds % 60;
+                document.getElementById('timer-display').innerText = 
+                    `${min < 10 ? '0' : ''}${min}:${sec < 10 ? '0' : ''}${sec}`;
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("⏰ ¡El tiempo de 30 minutos ha finalizado! Se procederá a calificar automáticamente.");
+                    evaluarTest(true);
+                }
+            }, 1000);
+        }
+
+        function validar(num, target, tol = 0.01) {
+            const inputVal = parseFloat(document.getElementById(`t${num}-val`).value);
+            const fb = document.getElementById(`f-${num}`);
+
+            if (!isNaN(inputVal) && Math.abs(inputVal - target) <= tol) {
+                fb.className = 'feedback success';
+                fb.innerText = `¡Correcto! El resultado es ${target}.`;
+            } else {
+                fb.className = 'feedback error';
+                fb.innerText = `Incorrecto. Verifique los cálculos. El valor correcto es ${target}.`;
+            }
+        }
+
+        const respuestasCorrectas = {
+            q1: 'B', q2: 'B', q3: 'B', q4: 'C', q5: 'B',
+            q6: 'A', q7: 'B', q8: 'B', q9: 'B', q10: 'B'
+        };
+
+        function evaluarTest(forzadoPorTiempo = false) {
+            if (!registroGuardado || !datosRegistradosValidos()) {
+                alert('⚠️ Debe registrar los datos informativos en la Pestaña 1 antes de rendir la evaluación.');
+                switchTab('tab-registro');
+                return;
+            }
+
+            if (intentosRestantes <= 0) {
+                alert('🚫 Ha agotado sus 2 intentos permitidos para esta evaluación.');
+                switchTab('tab-reporte');
+                return;
+            }
+
+            const form = document.getElementById('quiz-form');
+            let preguntasSinResponder = [];
+
+            if (!forzadoPorTiempo) {
+                for (let i = 1; i <= 10; i++) {
+                    if (!form['q' + i].value) {
+                        preguntasSinResponder.push(i);
+                    }
+                }
+
+                if (preguntasSinResponder.length > 0) {
+                    alert(`⚠️ No puede finalizar la evaluación. Debe responder OBLIGATORIAMENTE LAS 10 PREGUNTAS.\nPreguntas pendientes: ${preguntasSinResponder.join(', ')}`);
+                    return;
+                }
+            }
+
+            notaFinal = 0;
+            for (let i = 1; i <= 10; i++) {
+                const qVal = form['q' + i].value;
+                if (qVal === respuestasCorrectas['q' + i]) {
+                    notaFinal += 1;
+                }
+            }
+
+            intentosRestantes--;
+            document.getElementById('intentos-display').innerText = intentosRestantes;
+
+            const ahora = new Date();
+            fechaFin = ahora.toLocaleDateString('es-EC');
+            horaFin = ahora.toLocaleTimeString('es-EC');
+
+            evaluado = true;
+            clearInterval(timerInterval);
+
+            // DESBLOQUEAR PESTAÑA 5
+            const btnReporte = document.getElementById('tab-btn-reporte');
+            btnReporte.classList.remove('locked');
+            btnReporte.innerText = "5. Guardar y Enviar";
+
+            document.getElementById('badge-nota').innerText = notaFinal + " / 10 Puntos";
+            
+            if (intentosRestantes === 0) {
+                document.getElementById('btn-evaluar').disabled = true;
+                document.getElementById('btn-evaluar').innerText = "Sin intentos restantes";
+            }
+
+            actualizarResumen();
+            alert(`Evaluación Finalizada con Éxito.\nCalificación: ${notaFinal}/10 Puntos.\nIntentos restantes: ${intentosRestantes}`);
+            switchTab('tab-reporte');
+        }
+
+        function actualizarResumen() {
+            if (registroGuardado && evaluado) {
+                document.getElementById('bloqueo-mensaje').style.display = "none";
+                document.getElementById('contenido-reporte-oficial').style.display = "block";
+
+                document.getElementById('rep-estudiante').innerText = nombreEstudiante || "-";
+                document.getElementById('rep-especialidad').innerText = document.getElementById('especialidad').value || "-";
+                document.getElementById('rep-paralelo').innerText = document.getElementById('paralelo').value || "-";
+                document.getElementById('rep-intentos').innerText = `${2 - intentosRestantes} de 2`;
+                document.getElementById('rep-fecha').innerText = fechaFin || "Pendiente";
+                document.getElementById('rep-hora').innerText = horaFin || "Pendiente";
+
+                const repEstado = document.getElementById('rep-estado');
+                repEstado.innerText = `FIN DE LA EVALUACIÓN (${notaFinal}/10 Puntos)`;
+                repEstado.style.color = notaFinal >= 7 ? '#00695c' : '#d9381e';
+            } else {
+                document.getElementById('bloqueo-mensaje').style.display = "block";
+                document.getElementById('contenido-reporte-oficial').style.display = "none";
+            }
+        }
+
+        // ENVÍO DIRECTO Y EXCLUSIVO A lligui2768@gmail.com
+        function enviarCorreo() {
+            if (!registroGuardado || !datosRegistradosValidos()) {
+                alert('🚫 No puede enviar al docente. No ha completado los datos informativos en la Pestaña 1.');
+                switchTab('tab-registro');
+                return;
+            }
+
+            if (!evaluado) {
+                alert('🚫 No puede enviar al docente. No ha realizado ni finalizado la evaluación sumativa en la Pestaña 4.');
+                switchTab('tab-evaluacion');
+                return;
+            }
+
+            const esp = document.getElementById('especialidad').value;
+            const par = document.getElementById('paralelo').value;
+            const destinatarioExclusivo = "lligui2768@gmail.com";
+
+            const asunto = `Evaluación Semana 1 Sucesiones - ${nombreEstudiante} (${esp} ${par})`;
+            const cuerpo = 
+                `INFORME DE EVALUACIÓN SUMATIVA - SEMANA 1\n` +
+                `TEMA: SUCESIONES NUMÉRICAS REALES, MONÓTONAS Y RECURRENCIA\n` +
+                `ESTADO: FIN DE LA EVALUACIÓN\n\n` +
+                `INFORMACIÓN DEL ESTUDIANTE:\n` +
+                `Estudiante: ${nombreEstudiante}\n` +
+                `Curso: 2DO DE BGU\n` +
+                `Especialidad: ${esp}\n` +
+                `Paralelo: ${par}\n\n` +
+                `RESULTADOS DE EVALUACIÓN:\n` +
+                `Calificación Obtenida: ${notaFinal} / 10 PUNTOS\n` +
+                `Intentos Utilizados: ${2 - intentosRestantes} de 2\n` +
+                `Fecha de Finalización: ${fechaFin}\n` +
+                `Hora de Finalización: ${horaFin}\n\n` +
+                `Docente Destinatario: Msc. Edwin Lliguipuma Enríquez\n` +
+                `Correo Personal Exclusivo: lligui2768@gmail.com`;
+
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(destinatarioExclusivo)}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            
+            const win = window.open(gmailUrl, '_blank');
+            
+            if (!win || win.closed || typeof win.closed == 'undefined') {
+                window.location.href = `mailto:${destinatarioExclusivo}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+            }
+        }
+    </script>
+</body>
+</html>
